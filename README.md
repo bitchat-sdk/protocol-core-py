@@ -117,7 +117,6 @@ Same but `payloadLen` is 4 bytes (BE uint32) and source routing is supported.
 ## Running Tests
 
 ```bash
-cd ecosystem/packages/python/bitchat_protocol
 pip install -e ".[dev]"
 pytest
 ```
@@ -129,7 +128,7 @@ This package implements the same binary wire format as:
 - `android/.../BinaryProtocol.kt`
 
 Cross-language compatibility is verified by the golden fixture suite in
-`ecosystem/packages/spec-tests/`.
+the [bitchat-sdk](https://github.com/bitchat-sdk) org.
 
 ## License
 
