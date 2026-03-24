@@ -19,11 +19,11 @@ Initial GA release.
   - `encode_private_message(pkt)` / `decode_private_message(data)` → `PrivateMessagePacket | None`
 - `peer_id_from_noise_key(noise_public_key)` — derive 8-byte peer ID from 32-byte key
 - `peer_id_to_hex(peer_id)` / `peer_id_from_hex(hex_str)` — hex conversion helpers
-- Cross-language compatibility: wire format matches `@bitchat/protocol-core` (JS) and `BitchatProtocol` (Swift)
+- Cross-language compatibility: wire format matches `@bitchat-sdk/protocol-core` (JS) and `BitchatProtocol` (Swift)
 - Comprehensive fuzz and stress test suite (38 tests)
 
 ### Protocol Compatibility
-Wire-format compatible with BitChat iOS (Swift), BitChat Android (Kotlin), `@bitchat/protocol-core`, and `BitchatProtocol`.
+Wire-format compatible with BitChat iOS (Swift), BitChat Android (Kotlin), `@bitchat-sdk/protocol-core`, and `BitchatProtocol`.
 
 [0.1.0]: https://github.com/bitchat-sdk/protocol-core-py/releases/tag/v0.1.0
 
