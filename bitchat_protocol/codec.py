@@ -77,7 +77,8 @@ def encode(packet: BitchatPacket, *, padding: bool = False) -> bytes:
     original_payload_size = 0
 
     if len(payload) > COMPRESSION_THRESHOLD:
-        compressed = zlib.compress(payload, level=6, wbits=-15)  # raw deflate
+        _c = zlib.compressobj(level=6, wbits=-15)  # raw deflate
+        compressed = _c.compress(payload) + _c.flush()
         if len(compressed) < len(payload):
             original_payload_size = len(payload)
             payload = compressed
