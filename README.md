@@ -1,5 +1,9 @@
 # bitchat-protocol
 
+[![PyPI](https://img.shields.io/pypi/v/bitchat-protocol)](https://pypi.org/project/bitchat-protocol/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://python.org)
+[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](https://unlicense.org)
+
 BitChat binary protocol encode/decode for Python.
 
 Implements the wire format from the BitChat mesh networking protocol:
