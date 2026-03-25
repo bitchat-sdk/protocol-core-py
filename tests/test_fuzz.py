@@ -210,7 +210,8 @@ class TestCompressionBomb:
     _DEFLATE = {"wbits": -15}
 
     def _compress(self, data: bytes) -> bytes:
-        return zlib.compress(data, level=6, wbits=-15)
+        c = zlib.compressobj(level=6, wbits=-15)
+        return c.compress(data) + c.flush()
 
     def _make_compressed_v1_packet(
         self, original_size: int, compressed_payload: bytes
