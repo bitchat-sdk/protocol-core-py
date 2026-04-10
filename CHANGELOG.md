@@ -2,6 +2,12 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.2] — 2026-04-10
+
+### Security
+- Add payload length validation in `decode()` — reject packets exceeding 10 MB (upstream Android 1.7.2, PR #666)
+- New `PayloadTooLargeError` error class
+
 ## [0.1.0] — 2026-03-22
 
 Initial GA release.
@@ -27,4 +33,5 @@ Wire-format compatible with BitChat iOS (Swift), BitChat Android (Kotlin), `@bit
 
 [0.1.0]: https://github.com/bitchat-sdk/protocol-core-py/releases/tag/v0.1.0
 
-[Unreleased]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.0...v0.1.2

@@ -49,7 +49,7 @@ from .peer import (
     nostr_geo_chat_peer_id,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 
 __all__ = [
     # Types

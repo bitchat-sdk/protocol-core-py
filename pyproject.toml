@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "bitchat-protocol"
-version = "0.1.1"
+version = "0.1.2"
 description = "BitChat binary protocol encode/decode — packet structs, TLV codec, peer ID utilities"
 authors = [
     { name = "bitchat-sdk contributors" },
