@@ -33,6 +33,12 @@ class SuspiciousCompressionRatioError(BitchatProtocolError):
         super().__init__(f"Suspicious compression ratio: {ratio:.0f}:1 (limit 50000:1)")
 
 
+class PayloadTooLargeError(BitchatProtocolError):
+    """Payload length exceeds the maximum allowed."""
+    def __init__(self, length: int, maximum: int) -> None:
+        super().__init__(f"Payload length {length} exceeds maximum allowed ({maximum})")
+
+
 class TLVDecodeError(BitchatProtocolError):
     """TLV payload could not be decoded."""
 

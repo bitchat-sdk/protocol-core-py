@@ -26,6 +26,7 @@ from .types import (
 from .errors import (
     BitchatProtocolError,
     PacketTooShortError,
+    PayloadTooLargeError,
     UnsupportedVersionError,
     TruncatedFieldError,
     DecompressionError,
@@ -64,6 +65,7 @@ __all__ = [
     "UnsupportedVersionError",
     "TruncatedFieldError",
     "DecompressionError",
+    "PayloadTooLargeError",
     "SuspiciousCompressionRatioError",
     "TLVDecodeError",
     "TLVEncodeError",

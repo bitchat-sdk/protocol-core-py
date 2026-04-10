@@ -29,6 +29,7 @@ from .errors import (
     BitchatProtocolError,
     DecompressionError,
     PacketTooShortError,
+    PayloadTooLargeError,
     SuspiciousCompressionRatioError,
     TruncatedFieldError,
     UnsupportedVersionError,
@@ -43,6 +44,7 @@ RECIPIENT_ID_SIZE = 8
 SIGNATURE_SIZE = 64
 COMPRESSION_THRESHOLD = 256
 MAX_COMPRESSION_RATIO = 50_000
+MAX_PAYLOAD_LENGTH = 10_485_760
 
 
 def _header_size(version: int) -> int:
@@ -216,6 +218,9 @@ def _decode_core_raises(raw: bytes) -> BitchatPacket:
         (payload_length,) = struct.unpack_from(">I", raw, offset); offset += 4
     else:
         (payload_length,) = struct.unpack_from(">H", raw, offset); offset += 2
+
+    if payload_length > MAX_PAYLOAD_LENGTH:
+        raise PayloadTooLargeError(payload_length, MAX_PAYLOAD_LENGTH)
 
     # SenderID
     if offset + SENDER_ID_SIZE > len(raw):
