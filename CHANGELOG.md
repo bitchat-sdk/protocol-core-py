@@ -2,6 +2,11 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.1.3] — 2026-05-05
+
+### Documentation
+- README now links directly to [`bitchat-sdk/spec-tests`](https://github.com/bitchat-sdk/spec-tests) and explains the sibling-clone setup instead of a vague org reference.
+
 ## [0.1.2] — 2026-04-10
 
 ### Security
@@ -33,5 +38,6 @@ Wire-format compatible with BitChat iOS (Swift), BitChat Android (Kotlin), `@bit
 
 [0.1.0]: https://github.com/bitchat-sdk/protocol-core-py/releases/tag/v0.1.0
 
-[Unreleased]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.2...v0.1.3
 [0.1.2]: https://github.com/bitchat-sdk/protocol-core-py/compare/v0.1.0...v0.1.2
