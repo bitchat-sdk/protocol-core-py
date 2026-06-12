@@ -91,3 +91,19 @@ class PrivateMessagePacket:
     """TLV-decoded PrivateMessagePacket fields."""
     message_id: str    # Message ID (UTF-8 string).
     content: str       # Message content (UTF-8 string).
+
+
+@dataclasses.dataclass
+class RequestSyncPacket:
+    """REQUEST_SYNC payload: GCS (Golomb-Coded Set) filter parameters.
+
+    Mirrors RequestSyncPacket.swift (iOS reference). The extended fields
+    (`types`, `since_timestamp`, `fragment_id_filter`) are iOS-side TLVs;
+    decoders that don't know them skip them (forward-compatible).
+    """
+    p: int                                    # Golomb-Rice parameter (decode accepts 1..=MAX_P).
+    m: int                                    # Hash range M = N * 2^P (uint32).
+    data: bytes                               # GR bitstream bytes (MSB-first).
+    types: Optional[int] = None               # Sync-type flags bitmask. See sync_type_flags_*.
+    since_timestamp: Optional[int] = None     # Only sync packets newer than this (ms since epoch, uint64).
+    fragment_id_filter: Optional[str] = None  # Restrict sync to a single fragment ID (UTF-8).

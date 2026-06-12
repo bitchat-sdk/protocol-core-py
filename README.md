@@ -78,6 +78,48 @@ decode_private_message(data: bytes) -> PrivateMessagePacket | None
 
 Decoder is **strict**: returns `None` on any unknown TLV tag.
 
+### TLV: RequestSyncPacket
+
+REQUEST_SYNC gossip-sync payloads carrying [GCS](https://en.wikipedia.org/wiki/Golomb_coding) filter parameters. Unlike the TLVs above, these use **16-bit big-endian lengths**.
+
+```python
+encode_request_sync(packet: RequestSyncPacket) -> bytes
+decode_request_sync(data: bytes, max_accept_bytes: int = MAX_ACCEPT_FILTER_BYTES) -> RequestSyncPacket | None
+
+@dataclass
+class RequestSyncPacket:
+    p: int                                    # Golomb-Rice parameter (decode accepts 1..=MAX_P = 32)
+    m: int                                    # hash range M = N * 2^P (uint32)
+    data: bytes                               # GR bitstream bytes (MSB-first)
+    types: int | None = None                  # sync-type flags bitmask
+    since_timestamp: int | None = None        # only sync packets newer than this (ms, uint64)
+    fragment_id_filter: str | None = None     # restrict sync to one fragment ID
+```
+
+```python
+from bitchat_protocol import (
+    MessageType, RequestSyncPacket,
+    encode_request_sync, decode_request_sync, sync_type_flags_from_message_types,
+)
+
+wire = encode_request_sync(RequestSyncPacket(
+    p=19,
+    m=1 << 19,
+    data=gcs_filter_bytes,
+    types=sync_type_flags_from_message_types([MessageType.ANNOUNCE, MessageType.MESSAGE]),
+))
+request = decode_request_sync(wire)  # None on any invalid input
+```
+
+The decoder is **lenient about unknown tags** (forward-compatible — the optional
+`types`/`since_timestamp`/`fragment_id_filter` TLVs are iOS-side extensions that
+older decoders skip) and **strict about validity**: it rejects `p` outside
+`1..=MAX_P` (32), `m = 0`, missing required fields, and filter data larger than
+`max_accept_bytes` (default `MAX_ACCEPT_FILTER_BYTES` = 1024, a DoS guard).
+
+Helpers: `sync_type_flags_from_message_types(types)` / `sync_type_flags_to_message_types(flags)`
+convert between `list[MessageType]` and the flags bitmask.
+
 ### Peer ID Utilities
 
 ```python

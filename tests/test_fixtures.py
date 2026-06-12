@@ -16,8 +16,11 @@ from bitchat_protocol import (
     decode, encode, hex_to_bytes, bytes_to_hex,
     decode_announcement, encode_announcement,
     decode_private_message, encode_private_message,
+    decode_request_sync, encode_request_sync,
 )
 
+# tests/ → bitchat-python-protocol/ → BitchatSDK/ → Projects/ — spec-tests is a
+# sibling of the BitchatSDK workspace (same location the compiled JS tests use).
 FIXTURES_DIR = Path(__file__).parent.parent.parent.parent / "spec-tests" / "fixtures"
 
 FIXTURE_FILES = [
@@ -26,10 +29,23 @@ FIXTURE_FILES = [
     "malformed_packets.json",
     "announcement_packet.json",
     "private_message_tlv.json",
+    "request_sync.json",
 ]
 
 # TLV-only fixture types (no binary packet wrapper)
-_TLV_TYPES = {"announcement", "private_message_tlv"}
+_TLV_TYPES = {"announcement", "private_message_tlv", "request_sync"}
+
+_TLV_DECODERS = {
+    "announcement": decode_announcement,
+    "private_message_tlv": decode_private_message,
+    "request_sync": decode_request_sync,
+}
+
+_TLV_ENCODERS = {
+    "announcement": encode_announcement,
+    "private_message_tlv": encode_private_message,
+    "request_sync": encode_request_sync,
+}
 
 
 def is_valid_hex(s: Any) -> bool:
@@ -70,14 +86,9 @@ def test_fixture(entry: dict):
     if entry.get("should_decode"):
         if _is_tlv_only(entry):
             ftype = entry["type"]
-            if ftype == "announcement":
-                decoded = decode_announcement(raw)
-                assert decoded is not None, f"Expected decode_announcement success for {entry.get('id')}"
-                re_encoded = encode_announcement(decoded)
-            else:  # private_message_tlv
-                decoded = decode_private_message(raw)
-                assert decoded is not None, f"Expected decode_private_message success for {entry.get('id')}"
-                re_encoded = encode_private_message(decoded)
+            decoded = _TLV_DECODERS[ftype](raw)
+            assert decoded is not None, f"Expected TLV decode success for {entry.get('id')}"
+            re_encoded = _TLV_ENCODERS[ftype](decoded)
         else:
             decoded = decode(raw)
             assert decoded is not None, f"Expected decode success for {entry.get('id')}"
@@ -91,11 +102,7 @@ def test_fixture(entry: dict):
             )
     else:
         if _is_tlv_only(entry):
-            ftype = entry.get("type")
-            if ftype == "announcement":
-                result = decode_announcement(raw)
-            else:
-                result = decode_private_message(raw)
+            result = _TLV_DECODERS[entry["type"]](raw)
         else:
             result = decode(raw)
         assert result is None, (

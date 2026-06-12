@@ -445,3 +445,55 @@ class TestStress:
         assert result is not None
         assert result.version == 2
         assert result.payload == pkt.payload
+
+
+# ---------------------------------------------------------------------------
+# RequestSync TLV fuzzing
+# ---------------------------------------------------------------------------
+
+class TestRequestSyncFuzz:
+    """decode_request_sync must never raise — only return None."""
+
+    @pytest.mark.parametrize("seed", [0, 7, 0xFEED])
+    def test_random_bytes_never_raise(self, seed: int):
+        from bitchat_protocol import decode_request_sync
+        rng = random.Random(seed)
+        for _ in range(10_000):
+            n = rng.randrange(257)
+            data = rng.randbytes(n)
+            decode_request_sync(data)  # must not raise
+
+    def test_every_prefix_never_raises(self):
+        from bitchat_protocol import RequestSyncPacket, decode_request_sync, encode_request_sync
+        wire = encode_request_sync(RequestSyncPacket(
+            p=19, m=1 << 19, data=bytes([1, 2, 3, 4, 5]),
+            types=3, since_timestamp=1_000_000, fragment_id_filter="frag-01",
+        ))
+        for i in range(len(wire)):
+            decode_request_sync(wire[:i])  # must not raise
+
+    def test_single_bit_flips_never_raise(self):
+        from bitchat_protocol import RequestSyncPacket, decode_request_sync, encode_request_sync
+        rng = random.Random(5)
+        wire = encode_request_sync(RequestSyncPacket(p=19, m=1 << 19, data=rng.randbytes(64)))
+        for byte_idx in range(len(wire)):
+            for bit in range(8):
+                flipped = bytearray(wire)
+                flipped[byte_idx] ^= 1 << bit
+                decode_request_sync(bytes(flipped))  # must not raise
+
+    def test_high_volume_roundtrip(self):
+        from bitchat_protocol import MAX_P, RequestSyncPacket, decode_request_sync, encode_request_sync
+        rng = random.Random(0x5EED)
+        for i in range(10_000):
+            pkt = RequestSyncPacket(
+                p=rng.randrange(1, MAX_P + 1),
+                m=rng.randrange(1, 0xFFFF_FFFF),
+                data=rng.randbytes(rng.randrange(128)),
+                types=rng.randrange(1, 256) if rng.random() < 0.5 else None,
+                since_timestamp=rng.randrange(2**64) if rng.random() < 0.5 else None,
+                fragment_id_filter=f"frag-{rng.randrange(1000)}" if rng.random() < 0.5 else None,
+            )
+            decoded = decode_request_sync(encode_request_sync(pkt))
+            assert decoded is not None, f"decode failed at iteration {i}"
+            assert decoded == pkt, f"round-trip mismatch at iteration {i}: {decoded} != {pkt}"

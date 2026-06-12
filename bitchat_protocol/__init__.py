@@ -22,6 +22,7 @@ from .types import (
     BitchatPacket,
     AnnouncementPacket,
     PrivateMessagePacket,
+    RequestSyncPacket,
 )
 from .errors import (
     BitchatProtocolError,
@@ -41,6 +42,14 @@ from .tlv import (
     encode_private_message,
     decode_private_message,
 )
+from .sync import (
+    MAX_P,
+    MAX_ACCEPT_FILTER_BYTES,
+    encode_request_sync,
+    decode_request_sync,
+    sync_type_flags_from_message_types,
+    sync_type_flags_to_message_types,
+)
 from .peer import (
     peer_id_from_noise_key,
     peer_id_to_bytes,
@@ -49,7 +58,8 @@ from .peer import (
     nostr_geo_chat_peer_id,
 )
 
-__version__ = "0.1.2"
+# Single source of truth for the package version (pyproject reads it via hatch).
+__version__ = "0.1.3"
 
 __all__ = [
     # Types
@@ -59,6 +69,7 @@ __all__ = [
     "BitchatPacket",
     "AnnouncementPacket",
     "PrivateMessagePacket",
+    "RequestSyncPacket",
     # Errors
     "BitchatProtocolError",
     "PacketTooShortError",
@@ -79,6 +90,13 @@ __all__ = [
     "decode_announcement",
     "encode_private_message",
     "decode_private_message",
+    # Sync
+    "MAX_P",
+    "MAX_ACCEPT_FILTER_BYTES",
+    "encode_request_sync",
+    "decode_request_sync",
+    "sync_type_flags_from_message_types",
+    "sync_type_flags_to_message_types",
     # Peer
     "peer_id_from_noise_key",
     "peer_id_to_bytes",
