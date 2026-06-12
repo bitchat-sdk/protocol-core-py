@@ -2,7 +2,9 @@
 
 All notable changes follow [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased] — planned for 0.2.0
+## [Unreleased]
+
+## [0.2.0] — 2026-06-12
 
 ### Added
 - `RequestSyncPacket` TLV codec (`encode_request_sync` / `decode_request_sync`) — REQUEST_SYNC gossip-sync payloads carrying GCS filter parameters, closing the parity gap with the Swift and Kotlin SDKs. Implements the full iOS surface: required P/M/data plus optional `types`, `since_timestamp`, `fragment_id_filter` TLVs (16-bit big-endian lengths). Decode rejects `p` outside `1..=MAX_P` (32, upstream iOS PR #1331), `m = 0`, and filter data above `MAX_ACCEPT_FILTER_BYTES` (1024, configurable).
